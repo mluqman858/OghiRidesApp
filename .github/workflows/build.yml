@@ -23,18 +23,22 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee build-output.txt; echo "EXIT CODE: ${PIPESTATUS[0]}" >> build-output.txt
+        id: build
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        continue-on-error: true
 
       - name: Upload Build Logs
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: build-logs
-          path: build-output.txt
+          path: |
+            app/build/reports/
+            app/build/outputs/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
-        if: success()
+        if: steps.build.outcome == 'success'
         with:
           name: oghirides-apk
           path: app/build/outputs/apk/debug/app-debug.apk

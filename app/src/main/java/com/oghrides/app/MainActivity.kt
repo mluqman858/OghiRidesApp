@@ -15,10 +15,8 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.KeyEvent
 import android.webkit.*
 import android.widget.ProgressBar
 import android.widget.Toast
