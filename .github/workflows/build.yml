@@ -23,22 +23,10 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build Debug APK
-        id: build
         run: ./gradlew assembleDebug --no-daemon --stacktrace
-        continue-on-error: true
-
-      - name: Upload Build Logs
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: build-logs
-          path: |
-            app/build/reports/
-            app/build/outputs/
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
-        if: steps.build.outcome == 'success'
         with:
           name: oghirides-apk
           path: app/build/outputs/apk/debug/app-debug.apk
