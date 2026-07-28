@@ -21,7 +21,7 @@ import android.view.View
 import android.webkit.*
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -58,8 +58,12 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+        } else {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        }
         setContentView(R.layout.activity_main)
 
         webView = findViewById(R.id.webView)
@@ -91,7 +95,8 @@ class MainActivity : AppCompatActivity() {
     private fun setupEdgeToEdge() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.primary_dark)
         window.navigationBarColor = ContextCompat.getColor(this, R.color.surface)
-        bottomNavigation.setOnApplyWindowInsetsListener { v, insets ->
+        val rootView = findViewById<View>(android.R.id.content)
+        rootView.setOnApplyWindowInsetsListener { v, insets ->
             val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, navBarInsets.bottom)
             insets
