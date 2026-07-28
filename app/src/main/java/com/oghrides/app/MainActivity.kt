@@ -28,7 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.WindowInsetsCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.facebook.shimmer.ShimmerFrameLayout
+
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var shimmerLayout: ShimmerFrameLayout
+    private lateinit var shimmerLayout: View
     private lateinit var progressBar: ProgressBar
     private lateinit var offlineView: View
     private lateinit var adView: AdView
@@ -145,15 +145,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun showShimmer(show: Boolean) {
         shimmerLayout.visibility = if (show) View.VISIBLE else View.GONE
-        if (show) {
-            if (!shimmerLayout.isShimmerStarted) {
-                shimmerLayout.startShimmer()
-            }
-        } else {
-            if (shimmerLayout.isShimmerStarted) {
-                shimmerLayout.stopShimmer()
-            }
-        }
         webView.visibility = if (show) View.GONE else View.VISIBLE
     }
 

@@ -55,7 +55,11 @@
             android:progressBackgroundTint="@android:color/transparent"
             android:visibility="gone" />
 
-        <include layout="@layout/shimmer_loading"
+        <FrameLayout
+            android:id="@+id/shimmerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
