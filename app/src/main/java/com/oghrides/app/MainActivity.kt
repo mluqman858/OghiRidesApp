@@ -1,6 +1,7 @@
 package com.oghrides.app
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
@@ -15,20 +16,23 @@ import android.os.Environment
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
-import android.view.View
-import android.annotation.SuppressLint
 import android.view.KeyEvent
+import android.view.View
 import android.webkit.*
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.WindowInsetsCompat
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -38,9 +42,11 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var progressBar: ProgressBar
     private lateinit var offlineView: View
     private lateinit var adView: AdView
+    private lateinit var bottomNavigation: BottomNavigationView
 
     private val BASE_URL = "https://oghirides.web.app"
     private val CAMERA_PERMISSION = 100
@@ -48,34 +54,106 @@ class MainActivity : AppCompatActivity() {
     private val FILE_CHOOSER_REQUEST = 101
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
     private var cameraPhotoUri: Uri? = null
+    private var currentTabId: Int = R.id.nav_home
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         webView = findViewById(R.id.webView)
         swipeRefresh = findViewById(R.id.swipeRefresh)
+        shimmerLayout = findViewById(R.id.shimmerLayout)
         progressBar = findViewById(R.id.progressBar)
         offlineView = findViewById(R.id.offlineView)
         adView = findViewById(R.id.adView)
+        bottomNavigation = findViewById(R.id.bottomNavigation)
 
+        setupToolbar()
+        setupEdgeToEdge()
         setupWebView()
         setupSwipeRefresh()
         setupOfflineRetry()
         requestNotificationPermission()
         setupAdMob()
+        setupBottomNav()
 
-        if (savedInstanceState == null) {
-            loadUrl(BASE_URL)
-        } else {
-            webView.restoreState(savedInstanceState)
+        showShimmer(true)
+        loadUrl(BASE_URL)
+    }
+
+    private fun setupToolbar() {
+        val toolbar: com.google.android.material.appbar.MaterialToolbar = findViewById(R.id.toolbar)
+        setSupportActionBar(toolbar)
+    }
+
+    private fun setupEdgeToEdge() {
+        window.statusBarColor = ContextCompat.getColor(this, R.color.primary_dark)
+        window.navigationBarColor = ContextCompat.getColor(this, R.color.surface)
+        bottomNavigation.setOnApplyWindowInsetsListener { v, insets ->
+            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, navBarInsets.bottom)
+            insets
         }
+    }
+
+    private fun setupBottomNav() {
+        bottomNavigation.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    if (currentTabId != R.id.nav_home) {
+                        currentTabId = R.id.nav_home
+                        showShimmer(true)
+                        loadUrl(BASE_URL)
+                    }
+                    true
+                }
+                R.id.nav_rides -> {
+                    if (currentTabId != R.id.nav_rides) {
+                        currentTabId = R.id.nav_rides
+                        showShimmer(true)
+                        loadUrl("$BASE_URL/pages/customer/dashboard.html")
+                    }
+                    true
+                }
+                R.id.nav_support -> {
+                    if (currentTabId != R.id.nav_support) {
+                        currentTabId = R.id.nav_support
+                        showShimmer(true)
+                        loadUrl("$BASE_URL/support.html")
+                    }
+                    true
+                }
+                R.id.nav_profile -> {
+                    if (currentTabId != R.id.nav_profile) {
+                        currentTabId = R.id.nav_profile
+                        showShimmer(true)
+                        loadUrl(BASE_URL)
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun showShimmer(show: Boolean) {
+        shimmerLayout.visibility = if (show) View.VISIBLE else View.GONE
+        if (show) {
+            if (!shimmerLayout.isShimmerStarted) {
+                shimmerLayout.startShimmer()
+            }
+        } else {
+            if (shimmerLayout.isShimmerStarted) {
+                shimmerLayout.stopShimmer()
+            }
+        }
+        webView.visibility = if (show) View.GONE else View.VISIBLE
     }
 
     private fun setupAdMob() {
         MobileAds.initialize(this) { }
-
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
     }
@@ -96,7 +174,6 @@ class MainActivity : AppCompatActivity() {
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
             mediaPlaybackRequiresUserGesture = false
             cacheMode = WebSettings.LOAD_DEFAULT
-
             setUserAgentString(webView.settings.userAgentString + " OghiRidesApp/1.0")
         }
 
@@ -128,13 +205,13 @@ class MainActivity : AppCompatActivity() {
                 super.onPageStarted(view, url, favicon)
                 progressBar.visibility = View.VISIBLE
                 offlineView.visibility = View.GONE
-                webView.visibility = View.VISIBLE
             }
 
             override fun onPageFinished(view: WebView, url: String?) {
                 super.onPageFinished(view, url)
                 progressBar.visibility = View.GONE
                 swipeRefresh.isRefreshing = false
+                showShimmer(false)
 
                 view?.evaluateJavascript(
                     """
@@ -150,6 +227,7 @@ class MainActivity : AppCompatActivity() {
             override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
                 super.onReceivedError(view, request, error)
                 if (request.isForMainFrame) {
+                    showShimmer(false)
                     webView.visibility = View.GONE
                     offlineView.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
@@ -225,13 +303,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
     private fun loadUrl(url: String) {
         if (isOnline()) {
             offlineView.visibility = View.GONE
             webView.visibility = View.VISIBLE
             webView.loadUrl(url)
         } else {
+            showShimmer(false)
             webView.visibility = View.GONE
             offlineView.visibility = View.VISIBLE
         }
@@ -345,9 +423,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
-            webView.goBack()
-            return true
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (currentTabId != R.id.nav_home) {
+                bottomNavigation.selectedItemId = R.id.nav_home
+                return true
+            }
+            if (webView.canGoBack()) {
+                webView.goBack()
+                return true
+            }
         }
         return super.onKeyDown(keyCode, event)
     }

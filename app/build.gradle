@@ -45,4 +45,7 @@ dependencies {
 
     // AdMob Banner Ads
     implementation 'com.google.android.gms:play-services-ads:23.5.0'
+
+    // Shimmer loading effect
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
 }

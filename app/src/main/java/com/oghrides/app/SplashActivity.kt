@@ -1,11 +1,11 @@
 package com.oghrides.app
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.animation.AlphaAnimation
-import android.view.animation.ScaleAnimation
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -20,26 +20,51 @@ class SplashActivity : AppCompatActivity() {
         val title = findViewById<TextView>(R.id.splashTitle)
         val subtitle = findViewById<TextView>(R.id.splashSubtitle)
 
-        val scaleIn = ScaleAnimation(
-            0.5f, 1f, 0.5f, 1f,
-            ScaleAnimation.RELATIVE_TO_SELF, 0.5f,
-            ScaleAnimation.RELATIVE_TO_SELF, 0.5f
-        ).apply {
-            duration = 600
-            fillAfter = true
+        logo.scaleX = 0f
+        logo.scaleY = 0f
+        logo.alpha = 0f
+        title.alpha = 0f
+        subtitle.alpha = 0f
+
+        val logoScale = ObjectAnimator.ofFloat(logo, "scaleX", 0f, 1.1f, 1f).apply {
+            duration = 700
+            interpolator = AccelerateDecelerateInterpolator()
         }
-        logo.startAnimation(scaleIn)
 
-        val fadeIn = AlphaAnimation(0f, 1f).apply { duration = 500; startOffset = 300 }
-        title.startAnimation(fadeIn)
+        val logoScaleY = ObjectAnimator.ofFloat(logo, "scaleY", 0f, 1.1f, 1f).apply {
+            duration = 700
+            interpolator = AccelerateDecelerateInterpolator()
+        }
 
-        val fadeIn2 = AlphaAnimation(0f, 1f).apply { duration = 500; startOffset = 500 }
-        subtitle.startAnimation(fadeIn2)
+        val logoFade = ObjectAnimator.ofFloat(logo, "alpha", 0f, 1f).apply {
+            duration = 600
+        }
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, MainActivity::class.java))
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            finish()
-        }, 2200)
+        val titleFade = ObjectAnimator.ofFloat(title, "alpha", 0f, 1f).apply {
+            duration = 500
+            startDelay = 300
+        }
+
+        val subtitleFade = ObjectAnimator.ofFloat(subtitle, "alpha", 0f, 1f).apply {
+            duration = 500
+            startDelay = 500
+        }
+
+        val animSet = AnimatorSet().apply {
+            playTogether(logoScale, logoScaleY, logoFade, titleFade, subtitleFade)
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(p0: Animator) {}
+                override fun onAnimationEnd(p0: Animator) {
+                    startActivity(Intent(this@SplashActivity, MainActivity::class.java))
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+                    finish()
+                }
+                override fun onAnimationCancel(p0: Animator) {}
+                override fun onAnimationRepeat(p0: Animator) {}
+            })
+            startDelay = 400
+            duration = 1800
+        }
+        animSet.start()
     }
 }
