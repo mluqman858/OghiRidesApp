@@ -16,6 +16,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
 import android.view.View
+import android.annotation.SuppressLint
 import android.view.KeyEvent
 import android.webkit.*
 import android.widget.ProgressBar
@@ -155,9 +156,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorCode: Int, description: String?, responseHeaders: Map<String, String>) {
-                super.onReceivedHttpError(view, request, errorCode, description, responseHeaders)
-                if (request.isForMainFrame && errorCode >= 500) {
+            override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, errorResponse: WebResourceResponse) {
+                super.onReceivedHttpError(view, request, errorResponse)
+                if (request.isForMainFrame && errorResponse.statusCode >= 500) {
                     webView.visibility = View.GONE
                     offlineView.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE

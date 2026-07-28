@@ -40,10 +40,9 @@ dependencies {
     implementation 'androidx.webkit:webkit:1.9.0'
 
     // Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:34.16.0')
+    implementation platform('com.google.firebase:firebase-bom:32.7.2')
     implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-analytics'
 
     // AdMob Banner Ads
-    implementation 'com.google.android.gms:play-services-ads:24.1.0'
+    implementation 'com.google.android.gms:play-services-ads:23.5.0'
 }

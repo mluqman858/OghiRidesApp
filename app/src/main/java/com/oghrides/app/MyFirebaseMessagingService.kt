@@ -1,11 +1,13 @@
 package com.oghrides.app
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.PowerManager
@@ -83,7 +85,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .setOngoing(true)
             .setPriority(NotificationCompat.PRIORITY_MAX)
             .setCategory(NotificationCompat.CATEGORY_CALL)
-            .setSound(alarmSound, audioAttr)
+            .setSound(alarmSound, AudioManager.STREAM_ALARM)
             .setVibrate(VIBRATION_PATTERN)
             .setLights(0x10b981, 1000, 1000)
             .setFullScreenIntent(pendingIntent, true)
@@ -187,7 +189,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 enableVibration(true)
                 vibrationPattern = VIBRATION_PATTERN
                 setBypassDnd(true)
-                lockscreenVisibility = NotificationManager.VISIBILITY_PUBLIC
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 if (alarmUri != null) {
                     setSound(
                         alarmUri,
