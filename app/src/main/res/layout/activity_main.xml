@@ -1,36 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="@color/primary"
-        app:elevation="0dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary"
-            app:title="Oghi Rides"
-            app:titleTextColor="@android:color/white"
-            app:titleCentered="false"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+        android:theme="@style/ThemeOverlay.MaterialComponents.Toolbar.Dark"
+        app:title="OghiRides"
+        app:titleTextColor="@android:color/white" />
 
     <FrameLayout
-        android:id="@+id/contentContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginBottom="?attr/actionBarSize">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipeRefresh"
@@ -51,14 +39,8 @@
             android:layout_height="3dp"
             android:layout_gravity="top"
             android:max="100"
-            android:progressTint="@color/primary_light"
+            android:progressTint="@color/primary"
             android:progressBackgroundTint="@android:color/transparent"
-            android:visibility="gone" />
-
-        <FrameLayout
-            android:id="@+id/shimmerLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:visibility="gone" />
 
         <LinearLayout
@@ -82,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Internet Connection Nahi Hai"
-                android:textColor="@color/text_primary"
+                android:textColor="#1a1a1a"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:gravity="center"
@@ -92,12 +74,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="WiFi ya data on karein aur dobara try karein."
-                android:textColor="@color/text_secondary"
+                android:textColor="#666666"
                 android:textSize="14sp"
                 android:gravity="center"
                 android:layout_marginBottom="30dp" />
 
-            <com.google.android.material.button.MaterialButton
+            <Button
                 android:id="@+id/retryButton"
                 android:layout_width="200dp"
                 android:layout_height="50dp"
@@ -110,26 +92,25 @@
 
         </LinearLayout>
 
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:adSize="SMART_BANNER"
-            app:adUnitId="ca-app-pub-5077117567612429/2365073331" />
-
     </FrameLayout>
+
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-5077117567612429/2365073331" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/surface"
+        android:background="@android:color/white"
         app:elevation="8dp"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:labelVisibilityMode="labeled" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

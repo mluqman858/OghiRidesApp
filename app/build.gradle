@@ -45,6 +45,4 @@ dependencies {
 
     // AdMob Banner Ads
     implementation 'com.google.android.gms:play-services-ads:23.5.0'
-
-
 }

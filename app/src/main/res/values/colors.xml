@@ -4,7 +4,6 @@
     <color name="primary_dark">#059669</color>
     <color name="primary_light">#d1fae5</color>
     <color name="accent">#f59e0b</color>
-    <color name="error">#dc2626</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="text_primary">#1a1a1a</color>
@@ -15,8 +14,4 @@
     <color name="splash_end">#10b981</color>
     <color name="nav_bar">#FFFFFF</color>
     <color name="nav_bar_dark">#1a1a1a</color>
-    <color name="shimmer_base">#e0e0e0</color>
-    <color name="shimmer_highlight">#f5f5f5</color>
-    <color name="bottom_nav_icon_active">@color/primary</color>
-    <color name="bottom_nav_icon_inactive">#9e9e9e</color>
 </resources>
