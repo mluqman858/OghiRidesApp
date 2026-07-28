@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "838939154785",
+    "project_id": "bykea-oghi-f8fed",
+    "storage_bucket": "bykea-oghi-f8fed.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838939154785:android:15f00c56c2b6b16a26cd20",
+        "android_client_info": {
+          "package_name": "com.oghrides.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSO9GTaJeMd290Yq7b1WrhjvckRT07wDc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oghi Rides - Offline</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f9fafb;
+            color: #1a1a1a;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+        }
+        .emoji { font-size: 72px; margin-bottom: 24px; }
+        h1 { font-size: 24px; margin-bottom: 12px; }
+        p { color: #666; font-size: 16px; margin-bottom: 32px; line-height: 1.6; }
+        .btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:active { background: #059669; }
+        .brand {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">📡</div>
+        <h1>Internet Connection Nahi Hai</h1>
+        <p>WiFi ya mobile data on karein<br>phir dobara try karein.</p>
+        <button class="btn" onclick="window.location.reload()">Dobara Try Karein</button>
+        <div class="brand">Oghi Rides - Oghi aur Mansehra</div>
+    </div>
+</body>
+</html>
