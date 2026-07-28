@@ -24,7 +24,7 @@ jobs:
 
       - name: Build Debug APK
         run: |
-          ./gradlew assembleDebug --no-daemon --stacktrace > gradle-output.txt 2>&1 || true
+          ./gradlew assembleDebug --no-daemon --stacktrace > gradle-output.txt 2>&1
           echo "=== EXIT CODE: $? ===" >> gradle-output.txt
 
       - name: Upload Build Output
@@ -35,8 +35,9 @@ jobs:
           path: gradle-output.txt
 
       - name: Fail if build failed
+        if: always()
         run: |
-          if grep -q "BUILD FAILED" gradle-output.txt; then
+          if [ -f gradle-output.txt ] && grep -q "BUILD FAILED" gradle-output.txt; then
             echo "Build failed! Full output below:"
             cat gradle-output.txt | tail -100
             exit 1
