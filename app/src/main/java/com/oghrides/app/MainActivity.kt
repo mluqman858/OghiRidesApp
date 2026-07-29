@@ -18,6 +18,7 @@ import android.provider.MediaStore
 import android.view.View
 import android.annotation.SuppressLint
 import android.view.KeyEvent
+import com.oghrides.app.BuildConfig
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
