@@ -19,11 +19,15 @@ import android.view.View
 import android.annotation.SuppressLint
 import android.view.KeyEvent
 import android.view.MenuItem
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import java.io.File
+import java.net.HttpURLConnection
+import java.net.URL
+import org.json.JSONObject
 import android.webkit.*
 import android.widget.ProgressBar
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,7 +36,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
-import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -48,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigation: BottomNavigationView
 
     private val BASE_URL = "https://oghirides.web.app"
+    private val GITHUB_API = "https://api.github.com/repos/mluqman858/OghiRidesApp/releases/latest"
     private val CAMERA_PERMISSION = 100
     private val NOTIFICATION_PERMISSION = 200
     private val FILE_CHOOSER_REQUEST = 101
@@ -75,6 +79,7 @@ class MainActivity : AppCompatActivity() {
         setupOfflineRetry()
         requestNotificationPermission()
         setupAdMob()
+        checkForUpdate()
 
         if (savedInstanceState == null) {
             loadUrl(BASE_URL)
@@ -406,6 +411,61 @@ class MainActivity : AppCompatActivity() {
             }
         }
         bottomNavigation.selectedItemId = R.id.nav_home
+    }
+
+    private fun checkForUpdate() {
+        Thread {
+            try {
+                val url = URL(GITHUB_API)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.connectTimeout = 10000
+                conn.readTimeout = 10000
+                val json = JSONObject(conn.inputStream.bufferedReader().readText())
+                conn.disconnect()
+
+                val tagName = json.getString("tag_name")
+                val latestVersion = tagName.removePrefix("v").toIntOrNull() ?: return@Thread
+                val currentVersion = BuildConfig.VERSION_CODE
+
+                if (latestVersion > currentVersion) {
+                    val apkUrl = json.getJSONArray("assets")
+                        .getJSONObject(0)
+                        .getString("browser_download_url")
+
+                    runOnUiThread { downloadAndInstall(apkUrl) }
+                }
+            } catch (_: Exception) {}
+        }.start()
+    }
+
+    private fun downloadAndInstall(apkUrl: String) {
+        Thread {
+            try {
+                val url = URL(apkUrl)
+                val conn = url.openConnection() as HttpURLConnection
+                conn.connectTimeout = 15000
+                conn.readTimeout = 15000
+                val inputStream = conn.inputStream
+
+                val file = File(cacheDir, "oghirides-update.apk")
+                file.outputStream().use { output -> inputStream.copyTo(output) }
+                inputStream.close()
+                conn.disconnect()
+
+                val uri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", file)
+                runOnUiThread {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setDataAndType(uri, "application/vnd.android.package-archive")
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+            } catch (_: Exception) {
+                runOnUiThread {
+                    Toast.makeText(this, "Update download failed", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
     }
 
     override fun onDestroy() {
